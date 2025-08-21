@@ -102,7 +102,7 @@ class Solution(object):
 
     @staticmethod
     def str2int(strr, map):
-        mod1 =  324161893  # 这两个质数还是挺关键的，一开始采用 10^7+7 依然会出现重复
+        mod1 = 324161893  # 这两个质数还是挺关键的，一开始采用 10^7+7 依然会出现重复
         mod2 = 706028447
         result = 1
         for s in strr:
