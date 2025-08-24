@@ -71,7 +71,14 @@ ___
 
 ___
 9. Hadoop的checkpoint流程。
-
+Hadoop的checkpoint机制主要是为了维护HDFS文件系统的元数据一致性。防止因 NameNode 故障导致的数据丢失。Checkpoint 主要通过 Secondary NameNode（在 Hadoop 2.x 及以后的版本中，这个角色可以由 Checkpoint Node 或 Standby NameNode 承担）来实现。 \
+工作流程如下：   
+① 编辑日志： NameNode在执行文件系统操作时候，会将这些操作记录在编辑日志中，编辑日志是一个日志文件，记录了所有对文件系统元数据的更改。
+② FsImage：FsImage 是文件系统元数据的快照，包含了文件系统在某个时间点的状态。
+③ 定期合并：Secondary NameNode 定期从 NameNode 获取编辑日志和 FsImage，并将编辑日志中的操作应用到 FsImage 上，生成一个新的 FsImage 文件。这个过程称为 Checkpoint。
+④ 上传新 FsImage：新的 FsImage 文件会被上传回 NameNode，替换旧的 FsImage 文件。这样，NameNode 就有了最新的文件系统元数据快照。
+⑤ 清空编辑日志：NameNode 在接收到新的 FsImage 后，会清空编辑日志，以减少日志文件的大小。
+可参考：https://cloud.tencent.com/developer/article/2490873
 ___
 10. Hadoop的默认块大小是多少?为什么要设置这么大?
 
