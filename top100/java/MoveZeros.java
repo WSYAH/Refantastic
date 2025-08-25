@@ -9,9 +9,9 @@ class MoveZeros {
                 continue;
             }
             if (nums[i] != 0 && i > zero){
-                int _ = nums[i];
+                int tem = nums[i];
                 nums[i] = nums[zero];
-                nums[zero] = _;
+                nums[zero] = tem;
                 zero = zero + 1;
             }
         }
