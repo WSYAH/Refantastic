@@ -40,7 +40,7 @@ ___
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
 | NameNode            | 是 HDFS 的主服务器，核心功能是管理文件系统的元数据，它处理客户端的读写请求，记录每个文件的数据块分布信息。元数据以fsimage(命名空间快照）和 edits(操作日志）形式持久化到本地磁盘。                                                                              |  
 | DataNode            | 是 HDFS 的工作节点，负责存储实际数据块，默认大小为 128MB。它执行客户端或者 NameNode 调度的数据读写操作，并定期向 NameNode 发送心跳信号和块报告。                                                                                         |  
-| econdaryNameNode    | 辅助名称节点），不是 NameNode 的热备，而是元数据辅助管理进程，其核心任务是定期合并 NameNode 的 edits 日志和 fsimage 文件.                                                                                                  |  
+| econdaryNameNode    | 辅助名称节点，不是 NameNode 的热备，而是元数据辅助管理进程，其核心任务是定期合并 NameNode 的 edits 日志和 fsimage 文件.                                                                                                   |  
 | seconaryNameNode(续) | 从 nameNode 下载 fsimage 和 edits，合并后生成新的 fsimage 并上传至 NameNode，替换旧文件。此举可以防止 edits 日志过大（避免 NameNode 重启时好时过长）。合并后的fsimage需由NameNode主动加载，SecondaryNameNode故障不会影响集群运行，但会增加NameNode恢复时间。 |  
 
 
@@ -71,35 +71,91 @@ ___
 
 ___
 9. Hadoop的checkpoint流程。
-
+Hadoop的checkpoint机制主要是为了维护HDFS文件系统的元数据一致性。防止因 NameNode 故障导致的数据丢失。Checkpoint 主要通过 Secondary NameNode（在 Hadoop 2.x 及以后的版本中，这个角色可以由 Checkpoint Node 或 Standby NameNode 承担）来实现。 \
+工作流程如下：   
+① 编辑日志： NameNode在执行文件系统操作时候，会将这些操作记录在编辑日志中，编辑日志是一个日志文件，记录了所有对文件系统元数据的更改。
+② FsImage：FsImage 是文件系统元数据的快照，包含了文件系统在某个时间点的状态。
+③ 定期合并：Secondary NameNode 定期从 NameNode 获取编辑日志和 FsImage，并将编辑日志中的操作应用到 FsImage 上，生成一个新的 FsImage 文件。这个过程称为 Checkpoint。
+④ 上传新 FsImage：新的 FsImage 文件会被上传回 NameNode，替换旧的 FsImage 文件。这样，NameNode 就有了最新的文件系统元数据快照。
+⑤ 清空编辑日志：NameNode 在接收到新的 FsImage 后，会清空编辑日志，以减少日志文件的大小。
+可参考：https://cloud.tencent.com/developer/article/2490873
 ___
 10. Hadoop的默认块大小是多少?为什么要设置这么大?
-
+默认大小是128MB，设置这么大，不大不小，不小是为了减少NodeName内存开销，NameNode需要再内存中存储每个块的元数据，大约是150B/块。块大小跟NameNode的内存的消耗成反比，较大的块支持更大规模的集群扩展。  
+寻址时间： 从HDFS中找到目标块所需要的时间，文件块越大寻址时间越短，但是传输时间越长，处理某个块的时间受这两方面影响，太大太小都会导致处理时间变慢.
+另外，MapReduce中的map任务每次只能处理一个block的任务，块太大运行速度会很缓慢，但是太小又占NameNode内存.因此设置块大小最后使得寻址时间为传输时间的1%最好，所以定下来128MB，当然传输速度越快，块大小还可以增大。
+可参考：https://blog.csdn.net/wx1528159409/article/details/84260023
 ___
 11. Block划分的原因.
-
+将Hadoop划分为Block数据块石分布式存储与计算的核心设计。
+主要是为了提升读写性能，化整为零，将大文件切分为固定大小的Block，那么多个节点可以同时读取不同的Block，显著提升吞吐量，比单点更快，同时也分担了I/O压力。
+Block通过多副本进行容错、同时可以将副本分散至各个节点，可以优先选择负载较低的节点读取数据，避免节点分散或者限制，
 ___
 12. Hadoop常见的压缩算法?
-
+直接看吧：https://blog.csdn.net/2302_77630591/article/details/134084911
 ___
 13. Hadoop作业提交到YARN的流程?
+Hadoop作业提交到YARN的流程是一个多步骤的协作过程，涉及到客户端、ResourceManager、NodeManager和ApplicationMaster等组件的交互。
+![IDEA中关闭临时补全](../../images/YARN_step.png)  
 
+| STEP      | 操作                                                                                               | 作用or目的                                                                           |
+|-----------|--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------| 
+| 提交作业      | 提交作业，将作业资源上传到HDFS的指定目录                                                                           | 向ResourceManager（RM）申请一个唯一的作业ID，并获取资源提交路径。                                       |
+| 分配资源      | （RM）收到作业提交后，为其分配一个ApplicationMaster（AM）进程，RM将AM的启动命令发送给一个NodeManager                             | NodeManager启动一个Container来运行AM（对于MapReduce作业，即MRAppMaster），并初始化作业状态               |
+| AM注册与资源请求 | AM启动后向RM注册自身，根据作业需求（如Map任务数量）向RM申请资源（Container），包括内存、CPU等                                        | 以便RM跟踪作业状态,以及申请资源                                                                | 
+| 资源分配与任务启动 | RM根据调度策略（如Capacity Scheduler或Fair Scheduler）分配Container给AM。Container是YARN的资源单位，运行在NodeManager上   | AM与NodeManager通信，在分配的Container中启动Map或Reduce任务。任务执行时从HDFS读取输入数据，处理后将结果写入HDFS或本地磁盘 |
+| 任务监控与完成   | AM持续监控任务进度和状态。若任务失败，AM会重新申请资源并重试（次数有限制）                                                          | 所有任务完成后，AM向RM注销并关闭，客户端获取作业结果                                                     |  
 ___
 14. Hadoop的Combiner的作用.
+Hadoop中的Combiner是MapReduce框架中的一种优化组件，主要用于在Map阶段和Reduce阶段之间对数据进行局部聚合，以减少数据传输量并提升作业性能.  
+减少数据传输量: Combiner在Map任务所在的节点上对相同Key的中间结果进行局部聚合（如求和、计数等），显著减少需传输到Reduce端的数据量。例如，在WordCount任务中，Map输出(hello,1)和(hello,1)可合并为(hello,2)，从而降低网络带宽消耗和磁盘I/O压力。 
+优化Shuffle性能: 通过压缩Map输出数据量，Combiner减轻了Shuffle阶段的负载，避免因大量数据传输导致的网络拥塞，尤其对数据倾斜场景（如少数Key对应大量Value）效果显著。  
+降低Reduce任务负载: Reduce任务接收的数据量减少后，处理速度更快，资源消耗更低，整体作业效率提升. 
+
+Combiner在以下两个阶段触发：  
+Map任务溢写（Spill）时: 当Map输出的内存缓冲区达到阈值并溢写到磁盘前，对分区内数据进行合并。
+Map任务结束时: 所有溢写文件归并时再次执行Combiner.
+Combiner仅处理单个MapTask的输出，无法跨节点或跨Map任务聚合数据。其输入/输出键值类型必须与Map的输出和Reduce的输入一致.
 
 ___
 15. Hadoop序列化和反序列化.
-
+Hadoop的序列化和反序列化是其分布式计算框架中的核心机制，用于高效处理数据在网络传输和磁盘存储中的转换。
+序列化：将内存中的对象转换为字节流，以便存储或传输。   
+反序列化：将字节流还原为内存中的对象。  
+Hadoop采用Writable接口替代Java原生序列化（Serializable），原因包括:
+- 高效性：Writable生成的字节流更紧凑（如IntWritable仅需4字节，而Java序列化可能包含额外元信息），减少存储和传输开销
+- 性能优化：支持对象复用（通过readFields方法修改现有对象状态，避免频繁创建新对象），降低GC压力
+- 跨平台兼容：二进制格式不依赖特定语言或操作系统
 ___
 16. Hadoop的运行模式.
+- 本地模式（Local/Standalone Mode）： 所有的程序运行在单个JVM中，不需要启动任何的守护进程，比如说NameNode、DataNode等。
+使用本地文件系统而不需要使用HDFS，适合快速调试MapReduce程序逻辑。
+- 伪分布式模式（Pseudo-Distributed Mode）：可以再单个机器上模拟多节点集群，启动所有的Hadoop守护进程（NameNode等），但是实际上在同一台主机上,
+因为是单机模式，所以无备份，但是依然要配置核心xml文件。适合测试。
+- 完全分布式模式（Fully Distributed Mode）：生产环境中的所用模式。
 
+可以参考: https://developer.aliyun.com/article/1601955
 ___
 17. Hadoop小文件处理问题.
+Hadoop小文件问题是指大量远小于HDFS默认块大小（如128MB）的文件对集群性能和资源管理造成的负面影响。  
+- 每个文件在NameNode中占用约150字节的元数据，100万个小文件将消耗约300MB内存，导致NameNode内存不足，甚至触发Full GC，影响集群扩展性,
+元数据过多还会降低文件寻址速.  
+- MapReduce中，每个小文件会生成独立的Map任务，任务启动时间（约30秒）可能超过数据处理时间（如1MB文件处理仅需2秒），造成资源浪费;
+Hive查询可能出现“Map端负载倾斜”，部分Task处理数据量远低于平均值.
+- 小文件实际存储量=数据大小+块元数据开销。例如，1KB文件在128MB块配置下仍占用128MB HDFS空间
 
+解决方法： 
+- 从源头预防： 使用kafka或者Flume的时候，通过滚动策略控制文件大小，比如按照时间或者大小切割。
+- Hive动态分区优化，限制动态分区数量，避免分区过多产生小文件；  
+- 在存储层优化，将多个小文件打包成单个HAR文件，减少NameNode元数据条目，访问时通过har://路径透明读取。
+- 计算层优化: 合并多个小文件为一个逻辑分片，减少Map任务数量。
 ___
 18. Hadoop为什么要从2.x升级到3.x?
-
+不知道，2有缺点吧，但是现在学习标准还是从2来的
+为什么？ https://www.iamshuaidi.com/47052.html
+有什么升级？ https://www.cnblogs.com/bigband/p/13520760.html
 ___
 19. Hadoop的优缺点。
-
+优点： 高可靠、高扩展、成本低、高容错、支持多种数据类型
+缺点：实时性不行、小文件处理效率低、不支持多用户写入及任意修改、配置管理复杂。
 ___
