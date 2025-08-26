@@ -116,6 +116,6 @@ if __name__ == '__main__':
     strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
     solution = Solution()
     print(solution.groupAnagrams(strs))
-    # with open("groupAnagrams.input", "r") as file:
+    # with open("input/groupAnagrams.input", "r") as file:
     #     strr = eval(file.read())
     # result = solution.groupAnagrams(strr)
