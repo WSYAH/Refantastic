@@ -7,7 +7,7 @@ from uff.pipeline import Pipeline, get_source_pb
 from uff.feature import FeatureGroup as LegacyFeatureGroup
 from uff.data_collection import DataCollection
 from uff.sink import LakeSink
-
+# “X-stor” 是一个统一承载 CKV、CKV+ 等非关系型数据库服务 的平台
 class Graph:
     @staticmethod
     def prune_to(
