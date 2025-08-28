@@ -14,4 +14,6 @@
 - [x] 和为 K 的子数组 **subarraySum** 
 - [x] 滑动窗口最大值 maxSlidingWindow
 - [x] 最小覆盖子串 minWindow
-- [ ] 最大子数组和 maxSubArray
+- [x] 最大子数组和 maxSubArray
+- [x] 合并区间 merge
+- [ ] 
