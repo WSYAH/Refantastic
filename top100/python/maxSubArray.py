@@ -25,5 +25,16 @@
 #
 # 进阶：如果你已经实现复杂度为O(n) 的解法，尝试使用更为精妙的分治法求解。
 
+from typing import List
 class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
+        result = nums[0]
+        maxSum = nums[0]
+        for i in range(1,len(nums)):
+            if maxSum + nums[i] < nums[i]:
+                maxSum = nums[i]
+            else:
+                maxSum = maxSum + nums[i]
+            if maxSum > result:
+                result = maxSum
+        return result
