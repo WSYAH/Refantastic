@@ -134,7 +134,6 @@ Task提交：DAGScheduler将TaskSet提交给TaskScheduler；
 TaskScheduler与SchedulerBackend：SchedulerBackend是TaskScheduler与资源管理器的桥梁，负责申请资源和接收Executor注册信息。  
 Executor与Driver：Executor执行Task，定期向Driver发送心跳（汇报资源状态和任务进度）；Driver通过心跳监控Executor状态，更新任务进度。  
 
->>>>>>> Stashed changes
 ___
 ### 6. Spark作业调度
 这个跟上面的没什么区别，依然是分为，作业提交，阶段划分，任务调度，任务执行。
@@ -225,7 +224,7 @@ ___
 ### 13. Spark处理数据的具体流程说下
 
 ___
-14. Sparkjoin的分类
+14. Spark join的分类
 ___
 15. Spark map join的实现原理
 ___
@@ -389,7 +388,7 @@ ___
 ___
 95. Spark的RDD和partition的联系
 ___
-96. park 3.0特性
+96. spark 3.0特性
 ___
 97. Spark计算的灵活性体现在哪里
 
