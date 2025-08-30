@@ -222,11 +222,39 @@ Task的并行执行，这些Task封装了相同的计算逻辑，但是处理不
 顺序调度Stage，父Stage必须先于子Stage执行。  
 ___
 ### 13. Spark处理数据的具体流程说下
+Spark 处理数据可以看做一个高效的、分布式的流水线，核心思想是惰性求值和内存计算。  
+ &emsp;&emsp;第一步是初始化和数据源加载：先创建一个SparkSession，2.0之后它就是与应用程序交互的唯一入口，提供了链接集群、配置参数、读取数据的能力。  
+创建SparkSession后，便可以通过它从多种数据源（HDFS、本地文件系统、S3、Kafka、JDBC数据库）加载数据，生成最初的数据抽象，如RDD、DataFrame等。 
+Spark支持多种数据格式，parquet、csv、Json等。  
+ &emsp;&emsp;第二步就是数据转换和惰性求值： 数据加载后，可以定义一系列的Transforms转换操作，例如map、join等，对数据进行处理和加工。惰性求值是Spark实现优化的
+核心机制，在调用Action之前，所有的Transform都只是被记录下来，构建一个逻辑执行计划DAG，但是并不会立刻执行任何计算，这使得Spark可以对整体操作进行
+审视和优化。  
+ &emsp;&emsp;第三步就是物理执行和作业调度： 当调用一个Action如count()、show()时候，真正的计算过程便被触发。这个过程首先会进行Stage划分、然后每个Stage会被
+进一步转化成一系列的Task，这些TaskSet会被TaskScheduler分配给各个Executor进行实际执行；在Executor接收到Task后，便开始执行具体的计算逻辑（比如
+定义的filter、map函数），将数据加载至内存进行处理，并将结果保存在内存中、磁盘上或者进行shuffle操作以供后续的Stage使用，Executor本质上是线程池
+Task在其内部以多线程的形式运行。  
+ &emsp;&emsp;第四步就是结果收集与资源释放：最终Stage的Task执行结果会被汇集到Driver程序。根据不同的Action操作，结果可能会被直接返回（如collect()），也可能
+被写入到外部存储系统（saveAsTextFlies()）。当整个Spark程序运行完毕后，SparkSession和SparkContext会被关闭，并通知集群管理器释放所有为本次
+申请的计算资源（比如Executors）。
+___
+### 14. Spark join的分类
+Inner Join最为常用的就是，只返回满足Join条件的数据，Join默认都是Inner Join。  
+Cross Join，就是笛卡尔积。  
+left outer Join， 就是在Inner Join的基础上，将左表未匹配的数据，保留原表，右表项置空null。  
+right outer Join同理。  
+full outer Join，更是同理，左右不匹配的都保持原表并在各自缺失项置空null。   
+left semi join只返回匹配右表的数据，并且不显示右表项，这样可能不理解，但是如果我说这就是in/exist操作呢？  
+left anti join恰恰与semi相反，只返回不匹配右表的数据，可以理解为not in/exist。
+___
+### 15. Spark map join的实现原理
+Map Join又称为广播连接或者广播哈希连接（BHJ），是Spark中用于优化表连接的一种关键技术。核心思想是将小表广播到集群所有工作节点上，从而避免
+大规模的shuffle操作，显著提升性能。  
+这种连接方式特别适用于星型模型或雪花模型中常见的事实表与维度表连接场景，其中事实表通常包含大量的业务数据（大表），而维度表则包含相对较少的
+描述信息（小表）。与传统的shuffle Join需要将数据按照Key重新分区不同，Map Join通过在Map端完成所有连接操作，完全避免了Shuffle过程，这对于
+减少网络传播和数据倾斜问题有重要意义。  
+Map Join的适用性取决于小表的大小。通常，当小表的数据量小于Spark配置的广播阈值（通常为10MB）时候，Spark会自动选择使用Map Join策略。  
 
-___
-14. Spark join的分类
-___
-15. Spark map join的实现原理
+
 ___
 16. 介绍下Spark Shuffle及其优缺点
 ___
