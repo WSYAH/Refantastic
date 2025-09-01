@@ -252,13 +252,33 @@ Map Join又称为广播连接或者广播哈希连接（BHJ），是Spark中用�
 这种连接方式特别适用于星型模型或雪花模型中常见的事实表与维度表连接场景，其中事实表通常包含大量的业务数据（大表），而维度表则包含相对较少的
 描述信息（小表）。与传统的shuffle Join需要将数据按照Key重新分区不同，Map Join通过在Map端完成所有连接操作，完全避免了Shuffle过程，这对于
 减少网络传播和数据倾斜问题有重要意义。  
-Map Join的适用性取决于小表的大小。通常，当小表的数据量小于Spark配置的广播阈值（通常为10MB）时候，Spark会自动选择使用Map Join策略。  
-
+Map Join的适用性取决于小表的大小。通常，当小表的数据量小于Spark配置的广播阈值（通常为10MB）时候，Spark会自动选择使用Map Join策略。
 
 ___
-16. 介绍下Spark Shuffle及其优缺点
+### 16. 介绍下Spark Shuffle及其优缺点
+https://zhuanlan.zhihu.com/p/67061627  
+https://cloud.tencent.com/developer/article/1913486?policyId=1004  
+Spark Shuffle是Spark分布式计算框架中用于处理数据在Map和Reduce阶段之间交换和重组的关键机制。它描述了数据从map task输出到reduce task输入
+的整个过程，连接着Map和Reduce两个阶段，是这两个阶段之间数据交换的桥梁。
+Shuffle过程通常分为两个阶段：Map阶段的数据准备（Shuffle Write）和Reduce阶段的数据拷贝处理（Shuffle Read） 。
+在Spark中，Shuffle是一个必要但昂贵的操作，因为它涉及到大量的磁盘I/O、网络传输和数据序列化/反序列化操作，这些操作会消耗大量的计算和网络资源.  
+
+Spark Shuffle的执行流程可以分为三个主要阶段：Map阶段处理、中间结果存储和Reduce阶段处理。整体上，这是一个复杂的"数据长征"过程，
+数据从Map任务产生，经过分区、排序和聚合，最终被Reduce任务拉取和处理.  
+      &emsp;&emsp;Map阶段处理：每个Map任务执行用户逻辑（如map、filter）后，输出<Key, Value>键值对。这些数据首先需要按Key分区，确定每个Key属于哪个
+Reduce任务。分区规则由Partitioner决定，默认是HashPartitioner（key.hashCode % numPartitions）。数据会被缓存在内存中的
+ShuffleBuffer（内存缓冲区），当缓冲区使用率达到阈值时，会溢写到磁盘，生成临时文件（Spill File）。 
+      &emsp;&emsp;中间结果存储：Map任务结束后，会将所有溢写文件合并为一个最终的Shuffle文件和一个索引文件。索引文件记录每个分区在Shuffle文件中的起始位置
+和长度。这些文件存储在Map节点的本地磁盘，由BlockManager管理。Map任务完成后，会将Shuffle文件的元信息（如文件路径、分区大小）通过
+MapOutputTracker注册到Drive。
+      &emsp;&emsp;Reduce阶段处理：Reduce任务启动后，首先通过MapOutputTracker向Driver查询需要的分区数据分布信息。然后根据返回的元信息，通过
+BlockManager向各个Map节点发起拉取请求。拉取的数据会缓存在内存中，若内存不足则溢写到磁盘。最后，Reduce任务将来自不同Map节点的数据合并为
+一个有序的数据集，并进行必要的聚合操作。  
+
+**如果可以，还可以了解一下shuffle write与shuffle read操作**
 ___
-17. 什么情况下会产生Spark Shuffle?
+17. 什么情况下会产生Spark Shuffle?  
+
 ___
 18. 为什么要Spark Shuffle?
 ___
