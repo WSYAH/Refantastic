@@ -17,3 +17,7 @@
 #         for v in values:
 #             ans += v
 #     print(ans)
+
+# 这一题可以先排序，然后合并重叠区间，然后遍历就可以了，计算所有没有覆盖的间隙，可以用H-所有覆盖区间时长。
+# 但是Python会超时，只能过85%左右的测试用例，最好还是使用C++/Java。
+# C++ 安装与使用参考： https://blog.csdn.net/qq_42417071/article/details/137438374

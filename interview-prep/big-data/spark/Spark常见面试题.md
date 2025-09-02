@@ -141,16 +141,20 @@ ___
 ___
 ### 7. Spark的架构
 Spark是一个经典的主从式的分布式架构，主要通过内存计算和高效的调度机制来提升大数据处理速度。Spark的核心组件之间的相互协调见下图：  
-![spark架构](../../images/spark_infra.png) 
-
-
-___
-### 8. Spark的使用场景
+![spark架构](../../images/spark_infra.png)   
 Spark还提供了一系列有用的库，构建在Spark Core之上。  
 Spark SQL，处理结构化数据，支持SQL语句或者DataFrame\Dataset API 查询。  
 Spark Streaming, 用于处理实时数据流，采用微批次（micro-batch）架构。  
 MLlib， 机器学习库，提供了常见的机器学习算法和流水线（pipeline）构建工具。  
-Graphx，图计算框架，用于处理图结构数据和执行图算法。  
+Graphx，图计算框架，用于处理图结构数据和执行图算法。 
+
+___
+### 8. Spark的使用场景
+复杂的结构批处理，RFC存在两个场景，就是批特征和流特征，批处理就使用Spark。  
+大规模的 ETL 作业，将原始日志数据清洗、转换后加载到数据仓库（如 Hive, AWS Redshift）中。  
+分析用户行为日志，生成报表（如每日活跃用户、用户留存率）。  
+机器学习同样适用于Spark，提供了可扩展机器学习库，适合大规模数据集上面进行模型训练。  
+
 ___
 ### 9. Spark on standalone模型、YARN架构模型(画架构图) 
 差别还挺多的，写在这里感觉不太写的下，回头将下面的参考回答精简一下贴在这里@TODO
@@ -277,168 +281,233 @@ BlockManager向各个Map节点发起拉取请求。拉取的数据会缓存在�
 
 **如果可以，还可以了解一下shuffle write与shuffle read操作**
 ___
-17. 什么情况下会产生Spark Shuffle?  
+### 17. 什么情况下会产生Spark Shuffle?  
+当Spark需要对数据进行跨分区的重新组织，例如为了聚合连接的时候，就会发生shuffle，通常是因为操作要求需要相同的键的所有数据汇集到同一个分区中
+进行处理。  
+如果数据已预先分区：例如，两个要进行 join的 RDD 已经使用相同的分区器（Partitioner）和分区数进行了分区，那么 Spark 可能无需再次 Shuffle
+___
+### 18. 为什么要Spark Shuffle?
+**https://jishuzhan.net/article/1901993468061364226**   
+shuffle通常发生在需要重新分组或者聚合的操作中，比如groupbyKey，reduceByKey
+Join，repartition等操作中。  
+一般当数据处理要求将相同key的数据汇集到同一个分区（或者同一个计算节点）进行计算的时候，就必须进行shuffle，因为在分布式系统中，相同 key 的
+数据最初可能散落在不同的机器或分区上，Shuffle 就是那个负责“搬运”和“重组”数据的关键过程。  
+___
+### 19. Spark为什么快?
+内存计算，中间数据有限内存存储，减少磁盘IO。  
+DAG执行引擎， 有向无环图划分Stage，优化执行计划，减少不必要的shuffle。   
+高效shuffle机制， 提供多种shuffle策略，可选择是否排序聚合，减少计算量。   
+线程级别任务执行， Task线程方式在Executor的JVM中执行，复用JVM，减少启动开销。    
+更优的序列化，支持Kryo等高效序列化库，减少数据序列化开销和时间。   
+___
+### 20. Spark为什么适合迭代处理? 
+Spark适合迭代处理，主要是内存计算、弹性分布式数据集和基于DAG的执行引擎的特性。  
+内存结算，将中间数据存放在内存，迭代计算不用频繁读取磁盘。  
+**通过RDD的血缘关系实现**，仅仅重新计算丢失的分区，而相对的，MapReduce需要重新计算整个任务或者阶段。  
+基于DAG的执行引擎，可以将多个操作流水线优化，相对的，MapReduce两阶段间依赖磁盘shuffle。
+___
+### 21. Spark数据倾斜问题，如何定位，解决方案。 
+数据倾斜问题可能会导致某个Task特别慢或者导致OOM，可以通过在Spark UI里面定位stage和Task耗时以及数据量来定位问题：如果个别的Task的耗时远高于其他的Task，通常可以认为是数据倾斜，数据量也是如此，查看Shuffle Read Size/Records，如果某个别Task的持续时间远高于其他的，基本可以确定了。    
+然后进行代码分析，识别Shuffle算子与可能倾斜的Key：代码中使用了容易引起Shuffle的算子，比如说GroupByKey、reduceByKey、Join等。同时在Executor日志中，如果发现了OOM错误或者FetchFailedException等异常，并结合UI看到某个Task处理数据量巨大，可以确定了。    
+进一步判断倾斜key的情况：如果是热点key，那么可以通过采样统计key的分布：   
+```
+// 示例：采样并统计Key出现的次数，找出热点Key
+val sampledPairs = yourRdd.sample(false, 0.1) // 对RDD采样10%
+val sampledWordCounts = sampledPairs.countByKey()
+sampledWordCounts.foreach(println(_))
+```  
+如果是少数几个热点key，可以过滤掉这些key，或者单独处理。  
+如果是大量不同的key导致倾斜，则可以提高并行度或者通过两阶段聚合解决。  
+如果是Join操作中的大表关联小表，可以广播小表，Map Join，但是广播表不能太大，不然广播的时候易造成Driver和Executor内存溢出。  
+如果Join操作中两个表都是大表且有热点key的话，可以拆分Join或者通过随机扩容的方式。   
+可以参考：https://mp.weixin.qq.com/s?__biz=Mzk0MTI0OTI1NA==&mid=2247507912&idx=1&sn=367f3e3753130c683a8cc2cd84c4e6fd&chksm=c37ea9ec4d76d154bf2d4e8a87884ecb87b22c45dd3fa9b455df7747b2065eda1ada362706e7#rd
+___
+### 22. Spark的stage如何划分?在源码中是怎么判断属于Shuffle Map Stage或Result Stage的?
+是靠RDD之间的依赖关系划分的。  
+如下所示,从最后的Action操作反向追溯，进行Stage划分：
+Stage1 (ShuffleMapStage) -> (Shuffle) -> Stage2 (ShuffleMapStage) -> (Shuffle) -> Stage3 (ResultStage)。
+```
+sc.textFile("hdfs://...") // RDD0
+  .flatMap(_.split(" "))  // RDD1 (窄依赖)
+  .map(word => (word, 1)) // RDD2 (窄依赖)
+  .reduceByKey(_ + _)    // RDD3 (宽依赖！)
+  .filter(_._2 > 10)     // RDD4 (窄依赖)
+  .sortByKey()           // RDD5 (宽依赖！)
+  .collect()             // Action
+```
+参考： https://blog.csdn.net/m0_73889530/article/details/148657045  
+Spark UI: https://www.cnblogs.com/bigdata1024/p/12194298.html
+或者可以自己启动一个pyspark程序，会提供web界面的。
+___
+### 23. Spark join在什么情况下会变成窄依赖?
+是否会变成窄依赖，关键在于参与join的两个RDD是否已经使用了相同的分区器Partition而进行了预分区，并且分区数相同，这种情况下，因为相同key的数据
+已经位于一个节点，因此无需Shuffle。  
+可以使用PartitionBy方法对RDD进行预处理：  
+```
+val rddA = ... // 第一个RDD
+val rddB = ... // 第二个RDD
+
+// 使用相同的HashPartitioner和分区数对两个RDD进行预分区
+val partitioner = new HashPartitioner(8)
+val rddAPartitioned = rddA.partitionBy(partitioner)
+val rddBPartitioned = rddB.partitionBy(partitioner)
+
+// 此时进行join操作，Spark会识别到分区状态，避免Shuffle，形成窄依赖
+val resultRDD = rddAPartitioned.join(rddBPartitioned)
+```
+___
+### 24. Spark的内存模型?
+https://blog.csdn.net/wintershii/article/details/104169123
+___
+### 25. Spark分哪几个部分(模块)?分别有什么作用(做什么，自己用过哪些，做过什么)? 
+Spark Core、Spark SQL、Spark Streaming、MLib、GraphX。  
+虽然没有用过Streaming，可以用来处理来自kafka的是使用户点击数据流，进行实时统计和简单过滤。    
+https://mp.weixin.qq.com/s?__biz=Mzg2Mzc0Mjc3Nw==&mid=2247492143&idx=1&sn=45c8da33d0e5698d8aca2ecc550a45ac&chksm=ce715c79f906d56ff605146a5f839d7cc49acd46adebdbdb3eb7fe180e787d3871f2debec0c0#rd
+___
+### 26. RDD的宽依赖和窄依赖，举例一些算子
+窄依赖 父RDD的一个分区只对应子RDD的一个分区，没有Shuffle，高效，支持流水线执行，容错成本低
+map, filter, flatMap, union, sample, mapPartitions   
+宽依赖 父RDD的一个分区对应子RDD的多个分区 有Shuffle，开销大.
+groupByKey, reduceByKey, join(非协同划分), repartition, distinct, coGroup, sortByKey
 
 ___
-18. 为什么要Spark Shuffle?
-___
-19. Spark为什么快?
-___
-20. Spark为什么适合迭代处理?
-___
-21. Spark数据倾斜问题，如何定位，解决方案
-___
-22. Spark的stage如何划分?在源码中是怎么判断属于Shuffle Map Stage或Result Stage的?
-___
-23. Spark join在什么情况下会变成窄依赖?
-___
-24. Spark的内存模型?
-___
-25. Spark分哪几个部分(模块)?分别有什么作用(做什么，自己用过哪些，做过什么)?
-___
-26. RDD的宽依赖和窄依赖，举例一些算子
-___
-27. Spark SQL的GroupBy会造成窄依赖吗?
-___
-28. GroupBy是行动算子吗
-___
-29. Spark的宽依赖和窄依赖，为什么要这么划分?
-___
-30. 说下Spark中的Transform和Action，为什么Spark要把操作分为Transform和Action?常用的列举一些，说下算子原理
-___
-31. Spark的哪些算子会有shuffle过程?
-___
-32. Spark有了RDD，为什么还要有Dataform和DataSet?
-___
-33. Spark的RDD、DataFrame、DataSet、DataStream区别?
-___
-34. Spark的Job、Stage、Task分别介绍下，如何划分?
-___
-35. Application、job、Stage、task之间的关系
-___
-36. Stage内部逻辑
-___
-37. 为什么要根据宽依赖划分Stage?为
-___
-38. 什么要划分Stage
-___
-39. Stage的数量等于什么
-___
-40. 对RDD、DAG和Task的理解
-___
-41. DAG为什么适合Spark?
-___
-42. 介绍下Spark的DAG以及它的生成过程
-___
-43. DAGScheduler如何划分?干了什么活?
-___
-44. Spark容错机制?
-___
-45. RDD的容错
-___
-46. Executor内存分配?
-___
-47. Spark的batchsize，怎么解决小文件合并问题?
-___
-48. Spark参数(性能)调优
-___
-49. 介绍一下Spark怎么基于内存计算的
-___
-50. 说下什么是RDD(对RDD的理解)?RDD有哪些特点?说下知道的RDD算子
-___
-51. RDD底层原理
-___
-52. RDD属性
-___
-53. RDD的缓存级别?
-___
-54. Spark广播变量的实现和原理?
-___
-55. reduceByKey和groupByKey的区别和作用?
-___
-56. reduceByKey和reduce的区别?
-___
-57. 使用reduceByKey出现数据倾斜怎么办?
-___
-58. Spark SQL的执行原理?
-___
-59. Spark SQL的优化?
-___
-60. 说下Spark checkpoint
-___
-61. Spark SQL与DataFrame的使用?
-___
-62. Sparksql自定义函数?怎么创建DataFrame?
-___
-63. HashPartitioner和RangePartitioner的实现
-___
-64. Spark的水塘抽样
-___
-65. DAGScheduler、TaskScheduler、SchedulerBackend实现原理
-___
-66. 介绍下Sparkclient提交application后，接下来的流程?
-___
-67. Spark的几种部署方式
-___
-68. 在Yarn-client情况下，Driver此时在哪
-___
-69. Spark的cluster模式有什么好处
-___
-70. Driver怎么管理executor
-___
-71. Spark的map和flatmap的区别?
-___
-72. Spark的cache和persist的区别?它们是transformaiton算子还是action算子?
-___
-73. Saprk Streaming从Kafka中读取数据两种方式?
-___
-74. Spark Streaming的工作原理?
-___
-75. Spark Streaming的DStream和DStreamGraph的区别?
-___
-76. Spark输出文件的个数，如何合并小文件?
-___
-77. Spark的driver是怎么驱动作业流程的?
-___
-78. Spark SQL的劣势?
-___
-79. 介绍下Spark Streaming和Structed Streaming
-___
-80. Spark为什么比Hadoop速度快?
-___
-81. DAG划分Spark源码实现?
-___
-82. Spark Streaming的双流join的过程，怎么做的?
-___
-83. Spark的Block管理
-___
-84. Spark怎么保证数据不丢失
-___
-85. Spark SQL如何使用UDF?
-___
-86. Spark温度二次排序
-___
-87. Spark实现wordcount
-___
-88. Spark Streaming怎么实现数据持久化保存?
-___
-89. Spark SQL读取文件，内存不够使用，如何处理?
-___
-90. Spark的lazy体现在哪里?
-___
-91. Spark中的并行度等于什么
-___
-92. Spark运行时并行度的设署
-___
-93. Spark SQL的数据倾斜
-___
-94. Spark的exactly-once
-___
-95. Spark的RDD和partition的联系
-___
-96. spark 3.0特性
-___
-97. Spark计算的灵活性体现在哪里
+### 27. Spark SQL的GroupBy会造成窄依赖吗?
+不是，是宽依赖，需要根据指定的键进行重新Shuffle。  
+___
+### 28. GroupBy是行动算子吗
+不是，是一个Transform，不会立刻进行计算，行动算子会引发计算。  
+___
+### 29. Spark的宽依赖和窄依赖，为什么要这么划分?
+方便Stage划分，任务可以串联在一起，形成流水线，无需将中间结果落盘。  
+窄依赖的恢复：高效且简单。由于子分区只依赖于父RDD的少量分区（甚至一个），Spark只需要重新计算父RDD中那些丢失的分区即可。无需回溯整个血缘关系。
+宽依赖的恢复：昂贵且复杂。由于子分区依赖于父RDD的所有分区（因为Shuffle需要所有数据来重新计算Key的分布），单个节点的失败可能导致整个阶段的所有分区都需要重新计算。这被称为血统链过长问题。  
+流水线优化：窄依赖允许Spark将多个操作（如多个map)合并成一个Task，在一个线程内连续执行，避免了不必要的中间数据物化，极大提升了性能。  
+Shuffle优化：宽依赖就是Shuffle。Shuffle是Spark作业中最昂贵、最耗时的操作，因为它涉及网络I/O、磁盘I/O和数据序列化/反序列化。识别出宽依赖就意味着识别出了性能瓶颈点。开发者应该优先考虑使用带有“预聚合”功能的算子（如reduceByKey代替groupByKey）来减少Shuffle的数据量。
 
 ___
-### 98. PySpark 中的 worker，怎么和Java程序通信的
+### 30. 说下Spark中的Transform和Action，为什么Spark要把操作分为Transform和Action?常用的列举一些，说下算子原理
+Actions: 用于触发计算并输出结果的操作。它要么将计算结果返回给驱动程序（Driver Program），要么将结果写入外部存储系统
+Transformations: 用于构建计算逻辑的操作。它从一个已有的 RDD/DataFrame/Dataset 创建一个新的数据集,惰性（Lazy）。调用转换操作时，Spark
+不会立即执行计算，它只是记录下这个操作，并将其添加到逻辑执行计划（DAG） 中。  
+为什么？   
+为了优化执行计划: Spark 的 DAG 调度器可以看到完整的计算流程图（所有转换操作构成的血缘关系图）。在行动操作被触发时，它可以进行全局优化。  
+减少不必要的计算和I/O: 如果用户定义了一系列转换操作后发现自己写错了，在没有行动操作的情况下，不会有任何实际的计算发生，从而节省了宝贵的集群资源。只有在最终需要结果时，才会触发整个计算流程.  
+降低复杂度: 开发者可以像编写单机程序一样，一步步地定义复杂的数据流水线，而无需担心中间结果的存储和分布式计算的细节。Spark 会在幕后为你安排好一切。
+___
+### 31. Spark的哪些算子会有shuffle过程?
+宽依赖都会造成。
+___
+### 32. Spark有了RDD，为什么还要有Dataform和DataSet?
+RDD： 是Spark的基础和数据处理的底层核心，提供了最灵活、最底层的API。  
+DataFrame： 是建立在RDD之上的高级抽象，以列式存储为核心，为结构化数据的处理进行了深度优化。  
+DataSet： 是DataFrame的扩展，在提供DataFrame所有优化的同时，融合了RDD的类型安全和面向对象编程的优点。  
+
+RDD存储的是Java/Scala对象。无论是序列化、反序列化还是在内存中存储，对象本身的开销（如JVM对象头、包装类等）和GC（垃圾回收）成本都非常高，尤其是在数据量巨大。  
+Spark引擎无法理解RDD中数据的内部结构，因此无法做深度优化。每个转换操作（如map、filter）都是在“黑盒”上执行。  
+RDD API是面向JVM对象的，没有 schema（模式）的概念。例如，要过滤一个Person对象的RDD，你需要写rdd.filter(_.age > 18)。Spark完全不知道age是什么，无法进行优化。  
+对于SQL查询、聚合等常见数据分析任务，用RDD API写起来相对繁琐且效率不高。  
+
+DataFrame是一个以命名列（Column）组织的分布式数据集，等同于关系型数据库中的一张表或Python/R中的DataFrame。  
+它有一个明确的Schema，定义了每一列的名称和数据类型（如name: String, age: Int）。  
+底层仍然是RDD，但存储的不再是JVM对象，而是二进制格式的Row对象（InternalRow）。
+
+DataSet又是面向对象的强类型的，DataFrame可以看成DataSet\[row\]
+
+___
+### 33. Spark的RDD、DataFrame、DataSet、DataStream区别?
+上面已经提到了RDD、DataFrame、DataSet，那么DataStream和前几个又有什么区别呢？  
+RDD, DataFrame, Dataset 主要用于处理有限的、静态的数据集（批处理）。
+DataStream 主要用于处理无限的、连续的、实时的数据流（流处理）。     
+批处理： 用 spark.read + DataFrame + df.write   
+流处理： 用 spark.readStream + DataStream + df.writeStream  
+___
+### 34. Spark的Job、Stage、Task分别介绍下，如何划分?
+Job： 由一个行动操作触发的整个计算流程。每次你在代码中调用一个像 count(), collect(), saveAsTextFile(), show() 这样的行动算子时，就会产生一个Job。  
+一个Spark应用（Application）可以由多个Job组成，每个行动算子产生一个Job。  
+Stage：  Job的子集。一个Job会根据宽依赖被划分成一个或多个Stage。每个Stage包含一系列可以流水线化执行的窄依赖转换操作。  
+Stage内部是纯窄依赖的操作（如多个连续的map、filter），因此可以并行计算，无需数据移动。Stage之间是宽依赖，需要进行Shuffle（数据混洗），必须等待前一个Stage执行完毕才能开始下一个Stage。  
+
+Task：Stage的子集，是Spark中最小的执行单元。一个Stage会根据其分区数被拆分成多个Task。  
+每个Task负责处理一个分区的数据。每个Task在一个Executor的CPU Core上执行，是真正干活的单元。 同一个Stage中的所有Task执行的逻辑完全相同，只是处理的数据不同。
+___
+### 35. Application、job、Stage、task之间的关系.
+和上面一样。
+___
+### 36. Stage内部逻辑
+将一个 Stage 中的所有窄依赖转换操作拼接成一个“函数链”，然后将这个函数链应用到每个数据分片上，整个过程在一个线程内连续、流水线地执行，无需将中间结果物化（落盘）。
+___
+### 37. 为什么要根据宽依赖划分Stage?
+宽依赖是数据需要重新洗牌（Shuffle）的信号，而Shuffle是分布式计算中最昂贵、最需要同步的操作，因此它自然成为了划分计算阶段的边界。  
+想象一下reduceByKey()操作：为了对相同的key进行汇总，所有分布在集群不同节点上的、相同key的数据，必须被发送到同一个节点上去处理。  
+如果没有Stage划分：Spark将无法知道必须在Shuffle处进行同步和物化，可能会尝试将Shuffle操作和之前的操作流水线化，这将导致错误，因为一个Task无法获取其他Task还未计算出来的数据。  
+  
+Spark的容错机制基于RDD的血缘关系图重新计算。但重新计算的范围需要最小化以提升效率。  
+通过根据宽依赖划分Stage，Spark将计算流程分成了一系列步骤（Stage）。 每个Stage内部的窄依赖变换被捆绑在一起，它们的结果在Stage边界处（即Shuffle时）会被物化到磁盘。  
+如果Stage N（宽依赖之后）的计算失败，Spark不需要从最原始的数据开始重新计算。它可以直接从Stage边界处物化的Shuffle数据开始，重新计算Stage N。这极大地减少了容错的开销。  
+  
+DAGScheduler（负责Stage划分的组件）的最终目标是生成一个最优的执行计划。Stage内部是连续的窄依赖，这意味着这些操作可以被流水线化。多个map、filter操作可以被组合成
+一个Task，在一个线程内连续执行，无需将中间结果溢出到磁盘，效率极高。Stage的边界明确了可以进行流水线化的范围。这种清晰的阶段划分使得调度变得非常简单和高效。  
+
+___
+### 38. 为什么要划分Stage
+如上所示。  
+___
+### 39. Stage的数量等于什么。
+宽依赖RDD的数量+1.  
+
+___
+### 40. 对RDD、DAG和Task的理解
+RDD是一个不可变的、分布式的对象集合，每个RDD不仅包含数据，更重要的是记录了它是如何从其他RDD计算得来的（它的血缘关系）。  
+DAG是有向无环图。当你对一个RDD进行一系列转换操作时，Spark会将这些RDD的依赖关系（血缘）记录下来，形成一个DAG。  
+Task是Spark中最小的工作单元，代表了一个分区数据在一个阶段内的计算任务。   
+___
+### 41. DAG为什么适合Spark?
+因为它完美地契合了Spark惰性计算、内存迭代和全局优化的核心理念，解决了传统MapReduce模型的根本性瓶颈。 
+如果没有DAG：Spark就无法看到完整的计算逻辑，只能一步一步地执行，无法进行这些深度的优化。  
+RDD的弹性（Resilient）很大程度上依赖于DAG记录的血缘关系。如果没有DAG： 就无法实现这种精确的、按需的容错机制，可能需要进行昂贵的数据备份或全链路重算。  
+
+总结：DAG是Spark的灵魂。 它不仅仅是一个数据结构的表示，更是一个强大的优化引擎和调度指南。它将用户编写的看似一步一步的代码，
+转换成一个经过高度优化的、可在分布式集群上高效执行的物理计划。正是DAG的存在，才使得Spark能够实现其“速度更快”的承诺，同时
+保持了编程的灵活性和容错的弹性。没有DAG，Spark就退化为一个普通的分布式计算框架，无法发挥其巨大的性能优势。
+___
+### 42. 介绍下Spark的DAG以及它的生成过程
+DAG 的生成过程是 Spark 惰性计算 的完美体现。整个过程可以分为两个核心阶段: 
+逻辑计划阶段：构建 DAG  
+物理计划阶段：将 DAG 转换为执行计划  
+___
+### 43. DAGScheduler如何划分?干了什么活?
+DAGScheduler 的核心工作是面向 Stage 的任务调度。它介入的时机是：当一个行动操作被调用，触发了 Job 的执行。  
+划分 Stage：根据 RDD 的依赖关系（DAG），以宽依赖为边界，将一个 Job 的计算图划分为多个 Stage。 
+提交 Stage：按照 Stage 的依赖关系，依次或并行地将 Stage 提交给 TaskScheduler 去执行。  
+处理故障：如果某个 Task 执行失败，DAGScheduler 会负责重新提交计算失败的 Stage。（注意：Task 级别的重试和调度由 TaskScheduler 负责）。  
+如何划分应该之前已经提到了。  
+___
+### 44. Spark容错机制?
+Spark 的容错机制是其“弹性”的核心体现，它并不是通过简单的数据备份来实现的，而是利用 RDD 的血缘关系和 Stage 的划分来实现高效的低成本容错。  
+Spark 的容错机制核心是：如果某个分区的数据丢失了，我可以根据它最初是如何被计算出来的“配方”（即血缘），重新计算它。
+___
+### 45. RDD的容错
+RDD 级别的容错,  
+窄依赖的容错: 代价小。如果某个分区的数据丢失（例如，一个 Task 执行失败），由于窄依赖的子分区只依赖于父 RDD 的少量特定分区，Spark 只需要重新计算父 RDD 中那些丢失的分区即可。  
+宽依赖的容错：代价大。如果宽依赖后的某个分区数据丢失，问题就严重了。因为它的数据来源于父 RDD 的所有分区（因为 Shuffle 需要所有数据来重新计算 Key 的分布）。要重建它，几乎需要重新计算整个父 RDD。  
+
+Spark 的容错是一个多层次的、协同工作的系统。它建立在 RDD血缘 这一核心概念之上，通过 DAG调度器的Stage划分 来优化恢复过程，并由 Task调度器
+和 集群管理器 共同协作来处理各种运行时故障，从而在分布式环境下提供了高效且强大的容错能力。
+___
+### 46. Executor内存分配?
+Spark Executor 的内存分配并不简单，它被划分成了几个具有不同用途的区域。理解这些区域的作用对于避免 OutOfMemoryError（内存溢出）和提升应用性能至关重要。  
+一个 Executor 的内存主要由三大部分构成，由 spark.executor.memory 参数控制:  
+
+JVM Heap Memory：堆内内存。由 JVM 统一管理，受 GC（垃圾回收）影响。这是最主要的部分。
+
+Off-Heap Memory：堆外内存。不受 JVM 管理，也就不受 GC 影响，由 Spark 自己管理。用于减少大型工作负载的 GC 开销。
+
+Overhead Memory：预留内存。用于 JVM 自身开销（如线程栈、本地数据结构等）。这是除了堆内和堆外之外，额外分配的一块安全区。
+___
+### 47. Spark的batchsize，怎么解决小文件合并问题?
+Spark 本身的 batchSize 通常指的是在读取数据源（如 JDBC）时，一次获取多少行数据，它不直接用于解决小文件问题。 
+解决小文件问题的核心思路是：在写入数据时，主动控制每个输出文件的数据量，而不是事后补救。  
+小文件的根本原因是：Task 的数量决定了文件的个数。如果一个作业有太多的 Task，并且每个 Task 都输出一个文件，就会产生大量小文件。  
+使用算子：使用 coalesce 或 repartition 控制输出文件数（最常用）。  
+使用 Spark SQL 的自适应查询执行（AQE）: AQE 会在 Shuffle 后统计每个分区的大小，如果发现很多小的分区，它会自动将它们合并成更大的分区。
+___
