@@ -17,4 +17,7 @@
 - [x] 最大子数组和 maxSubArray
 - [x] 合并区间 merge
 - [x] 轮转数组 rotate
-- [ ] 除自身以外数组的乘积 productExceptSelf
+- [x] 除自身以外数组的乘积 productExceptSelf
+- [x] 缺失的第一个正数 firstMissingPositive
+- [x] 矩阵置零 setZeroes
+- [ ] 螺旋矩阵 spiralOrder
