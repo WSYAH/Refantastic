@@ -40,7 +40,7 @@ ___
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
 | NameNode            | 是 HDFS 的主服务器，核心功能是管理文件系统的元数据，它处理客户端的读写请求，记录每个文件的数据块分布信息。元数据以fsimage(命名空间快照）和 edits(操作日志）形式持久化到本地磁盘。                                                                              |  
 | DataNode            | 是 HDFS 的工作节点，负责存储实际数据块，默认大小为 128MB。它执行客户端或者 NameNode 调度的数据读写操作，并定期向 NameNode 发送心跳信号和块报告。                                                                                         |  
-| econdaryNameNode    | 辅助名称节点，不是 NameNode 的热备，而是元数据辅助管理进程，其核心任务是定期合并 NameNode 的 edits 日志和 fsimage 文件.                                                                                                   |  
+| secondaryNameNode   | 辅助名称节点，不是 NameNode 的热备，而是元数据辅助管理进程，其核心任务是定期合并 NameNode 的 edits 日志和 fsimage 文件.                                                                                                   |  
 | seconaryNameNode(续) | 从 nameNode 下载 fsimage 和 edits，合并后生成新的 fsimage 并上传至 NameNode，替换旧文件。此举可以防止 edits 日志过大（避免 NameNode 重启时好时过长）。合并后的fsimage需由NameNode主动加载，SecondaryNameNode故障不会影响集群运行，但会增加NameNode恢复时间。 |  
 
 
