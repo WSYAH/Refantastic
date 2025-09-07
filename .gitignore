@@ -1,4 +1,6 @@
 .idea/
 out/
 target/
-.vscode
+.config
+.vscode/
+
