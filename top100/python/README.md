@@ -37,5 +37,10 @@
 - [x] 排序链表 sortList （归并排序）
 - [x] 合并k个升序链表 mergeKLists
 - [x] LRU缓存 LRUCache
+- [x] 二叉树的中序遍历 inorderTraversal
+- [x] 二叉树的最大深度 maxDepth
+- [x] 翻转二叉树 invertTree
+- [x] 对称二叉树 isSymmetric
+- [x] 二叉树的直径 diameterOfBinaryTree
 - 
 
