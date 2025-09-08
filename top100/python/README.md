@@ -42,5 +42,7 @@
 - [x] 翻转二叉树 invertTree
 - [x] 对称二叉树 isSymmetric
 - [x] 二叉树的直径 diameterOfBinaryTree
-- 
+- [x] 二叉树的层序遍历 levelOrder
+- [x] 将有序数组转换为二叉搜索树 sortedArrayToBST
+- [ ] 验证二叉搜索树 isValidBST
 
