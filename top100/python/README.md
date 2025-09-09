@@ -44,5 +44,17 @@
 - [x] 二叉树的直径 diameterOfBinaryTree
 - [x] 二叉树的层序遍历 levelOrder
 - [x] 将有序数组转换为二叉搜索树 sortedArrayToBST
-- [ ] 验证二叉搜索树 isValidBST
+- [x] 验证二叉搜索树 isValidBST
+- [x] 二叉树中搜索第K小的元素 kthSmallest
+- [x] 二叉树的右视图 rightSideView
+- [x] 二叉树展开为链表 flatten
+- [x] 从前序与中序遍历序列构造二叉树 buildTree
+- [x] 路径综合III **pathSum**
+- [x] 二叉树的最近公共祖先 lowestCommonAncestor
+- [x] 二叉树中的最大路径和 maxPathSum
+- [x] 岛屿数量 numIslands
+- [x] 腐烂的橘子 orangesRotting
+- [x] 课程表 canFinish
+- [ ] 
+
 

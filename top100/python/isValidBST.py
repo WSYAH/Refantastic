@@ -15,10 +15,13 @@ class TreeNode:
         self.right = right
 class Solution:
     def isValidBST(self, root: Optional[TreeNode]) -> bool:
-        if not root or root.left == None and root.right == None:
+        lower = -(2<<31) - 1
+        upper = 2<<31 + 1
+        return self.helper(root, lower, upper)
+    def helper(self, root, lower, upper) -> int:
+        if root is None:
             return True
-        if root.left and root.val <= root.left.val:
+        if root.val <= lower or root.val >= upper:
             return False
-        if root.right and root.val >= root.right.val:
-            return False
-        return self.isValidBST(root.left) and self.isValidBST(root.right)
+
+        return self.helper(root.left, lower, root.val) and self.helper(root.right, root.val, upper)
