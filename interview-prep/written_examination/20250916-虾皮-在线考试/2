@@ -1,0 +1,42 @@
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+class Solution:
+    def levelOrder(self, root:TreeNode) :
+        # write code here
+        q = deque()
+        if root is None:
+            return []
+        q.append((root,1))
+        level = 1
+        tem = []
+        result = []
+        while q:
+            node,l = q.popleft()
+            if l > level:
+                level = l
+                result.append([x for x in tem])
+                tem = []
+            tem.append(node.val)
+            if node.left:
+                q.append((node.left,l+1))
+            if node.right:
+                q.append((node.right, l+1))
+        
+        if len(tem) > 0:
+            result.append([x for x in tem])
+        return result
+
+if __name__ == '__main__':
+    s = Solution()
+    root = TreeNode(3)
+    root.left = TreeNode(9)
+    root.right = TreeNode(20)
+    root.right.left = TreeNode(15)
+    root.right.right = TreeNode(7)
+    print(s.levelOrder(root))
