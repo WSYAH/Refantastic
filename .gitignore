@@ -1,2 +1,10 @@
 .idea
 .vscode
+.models/
+*.db
+__pycache__/
+.config
+logs/
+node_modules/
+data/
+.pytest_cache/

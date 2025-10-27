@@ -1,0 +1,534 @@
+2025-10-20 16:55:43,566 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-10-20 16:55:43,566 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("knowledge_documents")
+2025-10-20 16:55:43,566 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,568 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("knowledge_categories")
+2025-10-20 16:55:43,568 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,569 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("documents")
+2025-10-20 16:55:43,569 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,570 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("document_versions")
+2025-10-20 16:55:43,570 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,571 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("templates")
+2025-10-20 16:55:43,571 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,572 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("template_variables")
+2025-10-20 16:55:43,572 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,573 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+2025-10-20 16:55:43,573 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,574 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("roles")
+2025-10-20 16:55:43,574 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,575 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("permissions")
+2025-10-20 16:55:43,575 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,575 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_roles")
+2025-10-20 16:55:43,575 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,576 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("role_permissions")
+2025-10-20 16:55:43,576 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,577 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("workflows")
+2025-10-20 16:55:43,577 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,577 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("workflow_nodes")
+2025-10-20 16:55:43,577 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,578 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("workflow_instances")
+2025-10-20 16:55:43,578 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,578 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("workflow_tasks")
+2025-10-20 16:55:43,579 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,579 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("audit_logs")
+2025-10-20 16:55:43,579 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,581 INFO sqlalchemy.engine.Engine 
+DROP TABLE knowledge_documents
+2025-10-20 16:55:43,581 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,586 INFO sqlalchemy.engine.Engine 
+DROP TABLE knowledge_categories
+2025-10-20 16:55:43,586 INFO sqlalchemy.engine.Engine [no key 0.00011s] ()
+2025-10-20 16:55:43,590 INFO sqlalchemy.engine.Engine 
+DROP TABLE documents
+2025-10-20 16:55:43,590 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,593 INFO sqlalchemy.engine.Engine 
+DROP TABLE document_versions
+2025-10-20 16:55:43,593 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,595 INFO sqlalchemy.engine.Engine 
+DROP TABLE templates
+2025-10-20 16:55:43,595 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,598 INFO sqlalchemy.engine.Engine 
+DROP TABLE template_variables
+2025-10-20 16:55:43,598 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,601 INFO sqlalchemy.engine.Engine 
+DROP TABLE users
+2025-10-20 16:55:43,601 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,604 INFO sqlalchemy.engine.Engine 
+DROP TABLE roles
+2025-10-20 16:55:43,604 INFO sqlalchemy.engine.Engine [no key 0.00012s] ()
+2025-10-20 16:55:43,608 INFO sqlalchemy.engine.Engine 
+DROP TABLE permissions
+2025-10-20 16:55:43,608 INFO sqlalchemy.engine.Engine [no key 0.00012s] ()
+2025-10-20 16:55:43,611 INFO sqlalchemy.engine.Engine 
+DROP TABLE user_roles
+2025-10-20 16:55:43,611 INFO sqlalchemy.engine.Engine [no key 0.00015s] ()
+2025-10-20 16:55:43,614 INFO sqlalchemy.engine.Engine 
+DROP TABLE role_permissions
+2025-10-20 16:55:43,614 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,617 INFO sqlalchemy.engine.Engine 
+DROP TABLE workflows
+2025-10-20 16:55:43,617 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,621 INFO sqlalchemy.engine.Engine 
+DROP TABLE workflow_nodes
+2025-10-20 16:55:43,621 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,626 INFO sqlalchemy.engine.Engine 
+DROP TABLE workflow_instances
+2025-10-20 16:55:43,626 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,629 INFO sqlalchemy.engine.Engine 
+DROP TABLE workflow_tasks
+2025-10-20 16:55:43,629 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,632 INFO sqlalchemy.engine.Engine 
+DROP TABLE audit_logs
+2025-10-20 16:55:43,632 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,636 INFO sqlalchemy.engine.Engine COMMIT
+2025-10-20 16:55:43,638 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-10-20 16:55:43,638 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("knowledge_documents")
+2025-10-20 16:55:43,638 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,639 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("knowledge_documents")
+2025-10-20 16:55:43,639 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,640 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("knowledge_categories")
+2025-10-20 16:55:43,640 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,641 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("knowledge_categories")
+2025-10-20 16:55:43,641 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,641 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("documents")
+2025-10-20 16:55:43,641 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,642 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("documents")
+2025-10-20 16:55:43,642 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,642 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("document_versions")
+2025-10-20 16:55:43,643 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,643 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("document_versions")
+2025-10-20 16:55:43,643 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,644 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("templates")
+2025-10-20 16:55:43,644 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,644 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("templates")
+2025-10-20 16:55:43,644 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,644 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("template_variables")
+2025-10-20 16:55:43,645 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,645 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("template_variables")
+2025-10-20 16:55:43,645 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,645 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+2025-10-20 16:55:43,645 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,646 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("users")
+2025-10-20 16:55:43,646 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,647 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("roles")
+2025-10-20 16:55:43,647 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,648 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("roles")
+2025-10-20 16:55:43,648 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,648 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("permissions")
+2025-10-20 16:55:43,648 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,649 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("permissions")
+2025-10-20 16:55:43,649 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,650 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_roles")
+2025-10-20 16:55:43,650 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,653 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("user_roles")
+2025-10-20 16:55:43,653 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,654 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("role_permissions")
+2025-10-20 16:55:43,654 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,654 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("role_permissions")
+2025-10-20 16:55:43,655 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,655 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("workflows")
+2025-10-20 16:55:43,655 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,656 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("workflows")
+2025-10-20 16:55:43,656 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,656 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("workflow_nodes")
+2025-10-20 16:55:43,656 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,657 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("workflow_nodes")
+2025-10-20 16:55:43,657 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,657 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("workflow_instances")
+2025-10-20 16:55:43,657 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,658 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("workflow_instances")
+2025-10-20 16:55:43,658 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,658 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("workflow_tasks")
+2025-10-20 16:55:43,658 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,659 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("workflow_tasks")
+2025-10-20 16:55:43,659 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,659 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("audit_logs")
+2025-10-20 16:55:43,659 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,659 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("audit_logs")
+2025-10-20 16:55:43,659 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-10-20 16:55:43,661 INFO sqlalchemy.engine.Engine 
+CREATE TABLE knowledge_documents (
+	id VARCHAR(36) NOT NULL, 
+	title VARCHAR(500) NOT NULL, 
+	content TEXT NOT NULL, 
+	doc_type VARCHAR(100) NOT NULL, 
+	author VARCHAR(200), 
+	department VARCHAR(200), 
+	tags JSON, 
+	keywords JSON, 
+	file_path VARCHAR(1000), 
+	file_type VARCHAR(50), 
+	file_size INTEGER, 
+	is_vectorized BOOLEAN, 
+	vector_id VARCHAR(100), 
+	embedding_model VARCHAR(200), 
+	quality_score INTEGER, 
+	view_count INTEGER, 
+	reference_count INTEGER, 
+	status VARCHAR(50), 
+	is_public BOOLEAN, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME, 
+	vectorized_at DATETIME, 
+	_metadata JSON, 
+	PRIMARY KEY (id)
+)
+
+
+2025-10-20 16:55:43,661 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,664 INFO sqlalchemy.engine.Engine CREATE INDEX ix_knowledge_documents_title ON knowledge_documents (title)
+2025-10-20 16:55:43,664 INFO sqlalchemy.engine.Engine [no key 0.00007s] ()
+2025-10-20 16:55:43,667 INFO sqlalchemy.engine.Engine CREATE INDEX ix_knowledge_documents_doc_type ON knowledge_documents (doc_type)
+2025-10-20 16:55:43,667 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,670 INFO sqlalchemy.engine.Engine CREATE INDEX ix_knowledge_documents_is_vectorized ON knowledge_documents (is_vectorized)
+2025-10-20 16:55:43,670 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,673 INFO sqlalchemy.engine.Engine 
+CREATE TABLE knowledge_categories (
+	id VARCHAR(36) NOT NULL, 
+	name VARCHAR(200) NOT NULL, 
+	description TEXT, 
+	parent_id VARCHAR(36), 
+	icon VARCHAR(100), 
+	sort_order INTEGER, 
+	doc_count INTEGER, 
+	created_at DATETIME, 
+	updated_at DATETIME, 
+	PRIMARY KEY (id), 
+	UNIQUE (name)
+)
+
+
+2025-10-20 16:55:43,673 INFO sqlalchemy.engine.Engine [no key 0.00041s] ()
+2025-10-20 16:55:43,676 INFO sqlalchemy.engine.Engine 
+CREATE TABLE documents (
+	id VARCHAR(36) NOT NULL, 
+	title VARCHAR(500) NOT NULL, 
+	content TEXT NOT NULL, 
+	doc_type VARCHAR(100) NOT NULL, 
+	doc_number VARCHAR(100), 
+	status VARCHAR(50), 
+	creator_id VARCHAR(36) NOT NULL, 
+	approver_id VARCHAR(36), 
+	template_id VARCHAR(36), 
+	workflow_instance_id VARCHAR(36), 
+	tags JSON, 
+	attachments JSON, 
+	version INTEGER, 
+	is_public BOOLEAN, 
+	published_at DATETIME, 
+	expires_at DATETIME, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME NOT NULL, 
+	_metadata JSON, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(creator_id) REFERENCES users (id) ON DELETE RESTRICT, 
+	FOREIGN KEY(approver_id) REFERENCES users (id) ON DELETE SET NULL, 
+	FOREIGN KEY(template_id) REFERENCES templates (id) ON DELETE SET NULL, 
+	FOREIGN KEY(workflow_instance_id) REFERENCES workflow_instances (id) ON DELETE SET NULL
+)
+
+
+2025-10-20 16:55:43,677 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,679 INFO sqlalchemy.engine.Engine CREATE INDEX ix_documents_title ON documents (title)
+2025-10-20 16:55:43,679 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,681 INFO sqlalchemy.engine.Engine CREATE INDEX ix_documents_doc_type ON documents (doc_type)
+2025-10-20 16:55:43,682 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,684 INFO sqlalchemy.engine.Engine CREATE INDEX ix_documents_creator_id ON documents (creator_id)
+2025-10-20 16:55:43,684 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,687 INFO sqlalchemy.engine.Engine CREATE UNIQUE INDEX ix_documents_doc_number ON documents (doc_number)
+2025-10-20 16:55:43,687 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,690 INFO sqlalchemy.engine.Engine CREATE INDEX ix_documents_status ON documents (status)
+2025-10-20 16:55:43,690 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,692 INFO sqlalchemy.engine.Engine 
+CREATE TABLE users (
+	id VARCHAR(36) NOT NULL, 
+	username VARCHAR(100) NOT NULL, 
+	email VARCHAR(200) NOT NULL, 
+	password_hash VARCHAR(255) NOT NULL, 
+	full_name VARCHAR(200) NOT NULL, 
+	department VARCHAR(200), 
+	position VARCHAR(100), 
+	phone VARCHAR(50), 
+	avatar VARCHAR(500), 
+	is_active BOOLEAN, 
+	is_superuser BOOLEAN, 
+	last_login DATETIME, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME NOT NULL, 
+	_metadata JSON, 
+	PRIMARY KEY (id)
+)
+
+
+2025-10-20 16:55:43,692 INFO sqlalchemy.engine.Engine [no key 0.00015s] ()
+2025-10-20 16:55:43,696 INFO sqlalchemy.engine.Engine CREATE UNIQUE INDEX ix_users_email ON users (email)
+2025-10-20 16:55:43,696 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,697 INFO sqlalchemy.engine.Engine CREATE UNIQUE INDEX ix_users_username ON users (username)
+2025-10-20 16:55:43,697 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,700 INFO sqlalchemy.engine.Engine CREATE INDEX ix_users_is_active ON users (is_active)
+2025-10-20 16:55:43,700 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,703 INFO sqlalchemy.engine.Engine 
+CREATE TABLE roles (
+	id VARCHAR(36) NOT NULL, 
+	name VARCHAR(100) NOT NULL, 
+	code VARCHAR(50) NOT NULL, 
+	description TEXT, 
+	is_system BOOLEAN, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+
+2025-10-20 16:55:43,704 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,706 INFO sqlalchemy.engine.Engine CREATE UNIQUE INDEX ix_roles_name ON roles (name)
+2025-10-20 16:55:43,706 INFO sqlalchemy.engine.Engine [no key 0.00007s] ()
+2025-10-20 16:55:43,708 INFO sqlalchemy.engine.Engine CREATE UNIQUE INDEX ix_roles_code ON roles (code)
+2025-10-20 16:55:43,708 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,711 INFO sqlalchemy.engine.Engine 
+CREATE TABLE permissions (
+	id VARCHAR(36) NOT NULL, 
+	name VARCHAR(100) NOT NULL, 
+	code VARCHAR(100) NOT NULL, 
+	resource VARCHAR(100) NOT NULL, 
+	action VARCHAR(50) NOT NULL, 
+	description TEXT, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	UNIQUE (name)
+)
+
+
+2025-10-20 16:55:43,711 INFO sqlalchemy.engine.Engine [no key 0.00012s] ()
+2025-10-20 16:55:43,714 INFO sqlalchemy.engine.Engine CREATE UNIQUE INDEX ix_permissions_code ON permissions (code)
+2025-10-20 16:55:43,714 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,717 INFO sqlalchemy.engine.Engine CREATE INDEX ix_permissions_resource ON permissions (resource)
+2025-10-20 16:55:43,717 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,720 INFO sqlalchemy.engine.Engine 
+CREATE TABLE workflows (
+	id VARCHAR(36) NOT NULL, 
+	name VARCHAR(200) NOT NULL, 
+	doc_type VARCHAR(100), 
+	description TEXT, 
+	is_active BOOLEAN, 
+	config JSON NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+
+2025-10-20 16:55:43,720 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,722 INFO sqlalchemy.engine.Engine CREATE INDEX ix_workflows_is_active ON workflows (is_active)
+2025-10-20 16:55:43,723 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,725 INFO sqlalchemy.engine.Engine CREATE INDEX ix_workflows_doc_type ON workflows (doc_type)
+2025-10-20 16:55:43,725 INFO sqlalchemy.engine.Engine [no key 0.00007s] ()
+2025-10-20 16:55:43,727 INFO sqlalchemy.engine.Engine 
+CREATE TABLE workflow_instances (
+	id VARCHAR(36) NOT NULL, 
+	workflow_id VARCHAR(36) NOT NULL, 
+	document_id VARCHAR(36) NOT NULL, 
+	status VARCHAR(50) NOT NULL, 
+	current_node_id VARCHAR(36), 
+	initiator_id VARCHAR(36) NOT NULL, 
+	started_at DATETIME NOT NULL, 
+	completed_at DATETIME, 
+	_metadata JSON, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(workflow_id) REFERENCES workflows (id) ON DELETE RESTRICT, 
+	FOREIGN KEY(document_id) REFERENCES documents (id) ON DELETE CASCADE, 
+	FOREIGN KEY(current_node_id) REFERENCES workflow_nodes (id) ON DELETE SET NULL, 
+	FOREIGN KEY(initiator_id) REFERENCES users (id) ON DELETE RESTRICT
+)
+
+
+2025-10-20 16:55:43,727 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,729 INFO sqlalchemy.engine.Engine CREATE INDEX ix_workflow_instances_document_id ON workflow_instances (document_id)
+2025-10-20 16:55:43,729 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,732 INFO sqlalchemy.engine.Engine CREATE INDEX ix_workflow_instances_workflow_id ON workflow_instances (workflow_id)
+2025-10-20 16:55:43,732 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,735 INFO sqlalchemy.engine.Engine CREATE INDEX ix_workflow_instances_status ON workflow_instances (status)
+2025-10-20 16:55:43,735 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,738 INFO sqlalchemy.engine.Engine 
+CREATE TABLE document_versions (
+	id VARCHAR(36) NOT NULL, 
+	document_id VARCHAR(36) NOT NULL, 
+	version INTEGER NOT NULL, 
+	title VARCHAR(500) NOT NULL, 
+	content TEXT NOT NULL, 
+	change_type VARCHAR(50) NOT NULL, 
+	change_description TEXT, 
+	created_by VARCHAR(36) NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	_metadata JSON, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(document_id) REFERENCES documents (id) ON DELETE CASCADE, 
+	FOREIGN KEY(created_by) REFERENCES users (id) ON DELETE RESTRICT
+)
+
+
+2025-10-20 16:55:43,738 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,740 INFO sqlalchemy.engine.Engine CREATE INDEX ix_document_versions_document_id ON document_versions (document_id)
+2025-10-20 16:55:43,740 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,742 INFO sqlalchemy.engine.Engine 
+CREATE TABLE templates (
+	id VARCHAR(36) NOT NULL, 
+	name VARCHAR(200) NOT NULL, 
+	doc_type VARCHAR(100) NOT NULL, 
+	content TEXT NOT NULL, 
+	description TEXT, 
+	category VARCHAR(100), 
+	tags JSON, 
+	variable_names JSON, 
+	is_system BOOLEAN, 
+	is_active BOOLEAN, 
+	usage_count INTEGER, 
+	creator_id VARCHAR(36) NOT NULL, 
+	version INTEGER, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME NOT NULL, 
+	_metadata JSON, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(creator_id) REFERENCES users (id) ON DELETE RESTRICT
+)
+
+
+2025-10-20 16:55:43,742 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,745 INFO sqlalchemy.engine.Engine CREATE INDEX ix_templates_is_active ON templates (is_active)
+2025-10-20 16:55:43,745 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,748 INFO sqlalchemy.engine.Engine CREATE INDEX ix_templates_doc_type ON templates (doc_type)
+2025-10-20 16:55:43,748 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,750 INFO sqlalchemy.engine.Engine 
+CREATE TABLE user_roles (
+	id VARCHAR(36) NOT NULL, 
+	user_id VARCHAR(36) NOT NULL, 
+	role_id VARCHAR(36) NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT uq_user_role UNIQUE (user_id, role_id), 
+	FOREIGN KEY(user_id) REFERENCES users (id) ON DELETE CASCADE, 
+	FOREIGN KEY(role_id) REFERENCES roles (id) ON DELETE CASCADE
+)
+
+
+2025-10-20 16:55:43,750 INFO sqlalchemy.engine.Engine [no key 0.00015s] ()
+2025-10-20 16:55:43,754 INFO sqlalchemy.engine.Engine CREATE INDEX ix_user_roles_user_id ON user_roles (user_id)
+2025-10-20 16:55:43,754 INFO sqlalchemy.engine.Engine [no key 0.00011s] ()
+2025-10-20 16:55:43,757 INFO sqlalchemy.engine.Engine CREATE INDEX ix_user_roles_role_id ON user_roles (role_id)
+2025-10-20 16:55:43,757 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,760 INFO sqlalchemy.engine.Engine 
+CREATE TABLE role_permissions (
+	id VARCHAR(36) NOT NULL, 
+	role_id VARCHAR(36) NOT NULL, 
+	permission_id VARCHAR(36) NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT uq_role_permission UNIQUE (role_id, permission_id), 
+	FOREIGN KEY(role_id) REFERENCES roles (id) ON DELETE CASCADE, 
+	FOREIGN KEY(permission_id) REFERENCES permissions (id) ON DELETE CASCADE
+)
+
+
+2025-10-20 16:55:43,760 INFO sqlalchemy.engine.Engine [no key 0.00012s] ()
+2025-10-20 16:55:43,763 INFO sqlalchemy.engine.Engine CREATE INDEX ix_role_permissions_permission_id ON role_permissions (permission_id)
+2025-10-20 16:55:43,763 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,765 INFO sqlalchemy.engine.Engine CREATE INDEX ix_role_permissions_role_id ON role_permissions (role_id)
+2025-10-20 16:55:43,765 INFO sqlalchemy.engine.Engine [no key 0.00011s] ()
+2025-10-20 16:55:43,769 INFO sqlalchemy.engine.Engine 
+CREATE TABLE workflow_nodes (
+	id VARCHAR(36) NOT NULL, 
+	workflow_id VARCHAR(36) NOT NULL, 
+	name VARCHAR(200) NOT NULL, 
+	node_type VARCHAR(50) NOT NULL, 
+	approver_type VARCHAR(50), 
+	approver_id VARCHAR(36), 
+	config JSON, 
+	sort_order INTEGER NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(workflow_id) REFERENCES workflows (id) ON DELETE CASCADE
+)
+
+
+2025-10-20 16:55:43,769 INFO sqlalchemy.engine.Engine [no key 0.00010s] ()
+2025-10-20 16:55:43,771 INFO sqlalchemy.engine.Engine CREATE INDEX ix_workflow_nodes_workflow_id ON workflow_nodes (workflow_id)
+2025-10-20 16:55:43,771 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,774 INFO sqlalchemy.engine.Engine 
+CREATE TABLE audit_logs (
+	id VARCHAR(36) NOT NULL, 
+	user_id VARCHAR(36), 
+	action VARCHAR(100) NOT NULL, 
+	resource_type VARCHAR(100) NOT NULL, 
+	resource_id VARCHAR(36), 
+	ip_address VARCHAR(50), 
+	user_agent VARCHAR(500), 
+	request_data JSON, 
+	response_status INTEGER, 
+	error_message TEXT, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(user_id) REFERENCES users (id) ON DELETE SET NULL
+)
+
+
+2025-10-20 16:55:43,774 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,778 INFO sqlalchemy.engine.Engine CREATE INDEX ix_audit_logs_user_id ON audit_logs (user_id)
+2025-10-20 16:55:43,778 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,780 INFO sqlalchemy.engine.Engine CREATE INDEX ix_audit_logs_created_at ON audit_logs (created_at)
+2025-10-20 16:55:43,780 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,782 INFO sqlalchemy.engine.Engine CREATE INDEX ix_audit_logs_action ON audit_logs (action)
+2025-10-20 16:55:43,783 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,785 INFO sqlalchemy.engine.Engine CREATE INDEX ix_audit_logs_resource_id ON audit_logs (resource_id)
+2025-10-20 16:55:43,785 INFO sqlalchemy.engine.Engine [no key 0.00007s] ()
+2025-10-20 16:55:43,788 INFO sqlalchemy.engine.Engine CREATE INDEX ix_audit_logs_resource_type ON audit_logs (resource_type)
+2025-10-20 16:55:43,788 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,790 INFO sqlalchemy.engine.Engine 
+CREATE TABLE template_variables (
+	id VARCHAR(36) NOT NULL, 
+	template_id VARCHAR(36) NOT NULL, 
+	variable_name VARCHAR(100) NOT NULL, 
+	variable_type VARCHAR(50) NOT NULL, 
+	label VARCHAR(200) NOT NULL, 
+	description TEXT, 
+	is_required BOOLEAN, 
+	default_value TEXT, 
+	validation_rule JSON, 
+	options JSON, 
+	sort_order INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(template_id) REFERENCES templates (id) ON DELETE CASCADE
+)
+
+
+2025-10-20 16:55:43,790 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,793 INFO sqlalchemy.engine.Engine CREATE INDEX ix_template_variables_template_id ON template_variables (template_id)
+2025-10-20 16:55:43,793 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,796 INFO sqlalchemy.engine.Engine 
+CREATE TABLE workflow_tasks (
+	id VARCHAR(36) NOT NULL, 
+	instance_id VARCHAR(36) NOT NULL, 
+	node_id VARCHAR(36) NOT NULL, 
+	assignee_id VARCHAR(36) NOT NULL, 
+	status VARCHAR(50) NOT NULL, 
+	comment TEXT, 
+	assigned_at DATETIME NOT NULL, 
+	completed_at DATETIME, 
+	_metadata JSON, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(instance_id) REFERENCES workflow_instances (id) ON DELETE CASCADE, 
+	FOREIGN KEY(node_id) REFERENCES workflow_nodes (id) ON DELETE RESTRICT, 
+	FOREIGN KEY(assignee_id) REFERENCES users (id) ON DELETE RESTRICT
+)
+
+
+2025-10-20 16:55:43,796 INFO sqlalchemy.engine.Engine [no key 0.00009s] ()
+2025-10-20 16:55:43,798 INFO sqlalchemy.engine.Engine CREATE INDEX ix_workflow_tasks_instance_id ON workflow_tasks (instance_id)
+2025-10-20 16:55:43,798 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,801 INFO sqlalchemy.engine.Engine CREATE INDEX ix_workflow_tasks_status ON workflow_tasks (status)
+2025-10-20 16:55:43,801 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,804 INFO sqlalchemy.engine.Engine CREATE INDEX ix_workflow_tasks_assignee_id ON workflow_tasks (assignee_id)
+2025-10-20 16:55:43,804 INFO sqlalchemy.engine.Engine [no key 0.00008s] ()
+2025-10-20 16:55:43,806 INFO sqlalchemy.engine.Engine COMMIT
+2025-10-20 16:55:43,822 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-10-20 16:55:43,824 INFO sqlalchemy.engine.Engine INSERT INTO templates (id, name, doc_type, content, description, category, tags, variable_names, is_system, is_active, usage_count, creator_id, version, created_at, updated_at, _metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-10-20 16:55:43,824 INFO sqlalchemy.engine.Engine [generated in 0.00033s] [('03493f08-a72d-4837-babf-fc66d65df912', '请示报告', '请示', '{{title}}\n\n{{department}}:\n\n{{content}}\n\n特此请示。\n\n{{date}}', '标准请示报告模板', '请示', '[]', '["title", "department", "content", "date"]', 1, 1, 0, None, 1, '2025-10-20 08:55:43.824929', '2025-10-20 08:55:43.824929', '{}'), ('f559bb7d-ef16-4097-9f64-30aa1b811ac0', '会议通知', '通知', '关于{{meeting_topic}}的通知\n\n各部门:\n\n定于{{meeting_time}}在{{meeting_location}}召开{{meeting_topic}}会议，请{{participants}}准时参加。', '会议通知模板', '通知', '[]', '["meeting_topic", "meeting_time", "meeting_location", "participants"]', 1, 1, 0, None, 1, '2025-10-20 08:55:43.824929', '2025-10-20 08:55:43.824929', '{}'), ('7d40db06-38ea-46ba-9726-2956502e3718', '工作总结', '总结', '{{period}}工作总结\n\n一、工作回顾\n{{review}}\n\n二、存在问题\n{{problems}}\n\n三、下步计划\n{{plans}}', '工作总结模板', '总结', '[]', '["period", "review", "problems", "plans"]', 1, 1, 0, None, 1, '2025-10-20 08:55:43.824929', '2025-10-20 08:55:43.824929', '{}'), ('e5befaee-b94a-4858-b576-c191c35d29bb', '请假申请', '申请', '请假申请\n\n姓名：{{name}}\n部门：{{department}}\n请假类型：{{leave_type}}\n请假时间：{{start_date}} 至 {{end_date}}\n请假事由：{{reason}}\n\n申请人：{{name}}\n日期：{{apply_date}}', '请假申请模板', '申请', '[]', '["name", "department", "leave_type", "start_date", "end_date", "reason", "apply_date"]', 1, 1, 0, None, 1, '2025-10-20 08:55:43.824929', '2025-10-20 08:55:43.824929', '{}')]
+2025-10-20 16:55:43,825 INFO sqlalchemy.engine.Engine ROLLBACK

@@ -1,0 +1,52 @@
+version_config:
+  login_config:
+    verify_interface: ""
+    secret_key: "123456"
+  # log目录
+  log_path: "./logs/"
+  policy_file_path: ""
+  # 推荐的数据条数
+  recommend: 10
+  # 文章内容配置
+  article_config:
+    # 文章署名
+    article_author: ""
+    # 省份
+    province: ""
+    num1: 3
+    num2: 4
+  knowledge_config:
+    is_use: false
+    # 知识库查询接口
+    knowledge_api_ip: ""
+    # 知识库token
+    knowledge_base_token: ""
+    # 知识库查询参数
+    similarity: 0.5
+    search_mode: "embedding"
+    top_number: 3
+    user_token: ""
+
+return_error_code:
+  1: 未定义错误
+
+official_document_fonts:
+  - 宋体
+  - 方正大标宋简体
+  - 方正大标宋简繁
+  - 方正小标宋简体
+  - 方正小标宋_GBK
+  - 仿宋
+  - 仿宋_GB2312
+  - 方正仿宋简体
+  - 方正仿宋_GBK
+  - 楷体
+  - 楷体_GB2312
+  - 方正楷体简体
+  - 方正楷体_GBK
+  - 黑体
+  - 方正黑体简体
+  - 方正黑体_GBK
+  - Times New Roman
+
+router_config:
